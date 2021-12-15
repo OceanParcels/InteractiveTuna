@@ -78,11 +78,19 @@ if(__name__=='__main__'):
 
     assert (X<=lx).all()
     assert (Y<=ly).all()
-
+    
+    # Flow field configuration
+    # BJ: Bickley Jet
+    # DG: Double Gyre
+    # RW: Random Walk
     ff = 'BJ'
     assert ff in ['RW', 'DG', 'BJ']
 
+    # define the particle types: tuna particle is 0, dFAD particle is 1
     ptype = np.zeros(npart)
+    # The zeroth particle is only used in fishing strategy FS1.
+    # This is article does nothing, but is only located at a random
+    # tuna particle before a fishing event, where it acts as a dFAD.
     ptype[:nfad + 1] = 1
 
     # Define a fieldset without flow
@@ -128,7 +136,7 @@ if(__name__=='__main__'):
         fieldset.FADc.to_write = False # enabling the writing of Field prey during execution
 
     # list that determines at which tuna particle to fish
-    # under fishing strategy FS0
+    # under fishing strategy FS1
     fieldFe = Field('fe', np.array([0]), lon=np.array([0]), lat=np.array([0]), time=np.array([0]),
                        interp_method='nearest', mesh='flat', allow_time_extrapolation=True)
     fieldset.add_field(fieldFe) # prey field added to the velocity FieldSet
@@ -182,7 +190,7 @@ if(__name__=='__main__'):
 
     # Parameter for the Bickley Jet flow
     if(ff=='BJ'):
-        fieldset.add_constant("Ubj", (.05 / 1000)) # maximum flow strength (km/s)
+        fieldset.add_constant("Ubj", (.1 / 1000)) # maximum flow strength (km/s)
 
     # Parameters for the double gyre flow
     if(ff=='DG'):
@@ -220,7 +228,7 @@ if(__name__=='__main__'):
                                     outputdt=4.32e4) # output twice a day
 
     rt = 8.64e6 # 100 days of simulation
-    print('model run time: ',rt/24/3600)
+    print('model run time (days): ',rt/24/3600)
 
     # set up the kernels, which depends on the configuration used
     kernels = pset.Kernel(pk.CaughtP) + pset.Kernel(pk.GEvacuation) # increase tuna hunger

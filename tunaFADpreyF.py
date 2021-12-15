@@ -151,7 +151,8 @@ if(__name__=='__main__'):
     fieldset.add_constant("scaleD", scale) # scale tuna gastric evacuation rate
 
     fieldset.add_constant("epsT", 0.5) # Fraction of associated tuna caught
-    fieldset.add_constant("p",  float(sys.argv[8])) # p parameter of the geometric distribution
+    p = float(sys.argv[8])
+    fieldset.add_constant("p",  p) # p parameter of the geometric distribution
     fieldset.add_constant("nfad", nfad) # total number of FADs
     fieldset.add_constant("ntuna", ntuna) # total number of tuna particles
     # Set a maximum tuna swimming velocity
@@ -232,24 +233,26 @@ if(__name__=='__main__'):
         kernels += pset.Kernel(pk.BickleyJet) # Bickley jet flow
         kernels += pset.Kernel(pk.DisplaceParticle) # displace tuna due to swimming
         kernels += pset.Kernel(pk.zper_mrefBC) # reflective boundary conditions
+        kernels += pset.Kernel(pk.PreyGrad_zpb) # calculate prey gradient
 
         ikernels += pset.InteractionKernel(pk.ItunaFAD_zpb)
         ikernels += pset.InteractionKernel(pk.Itunatuna_zpb)
     else:
         kernels += pset.Kernel(pk.DisplaceParticle) # displace tuna due to swimming
         kernels += pset.Kernel(pk.reflectiveBC) # reflective boundary conditions
+        kernels += pset.Kernel(pk.PreyGrad) # calculate prey gradient
 
         ikernels += pset.InteractionKernel(pk.ItunaFAD)
         ikernels += pset.InteractionKernel(pk.Itunatuna)
 
-    kernels += pset.Kernel(pk.PreyGrad)
     kernels += pset.Kernel(pk.FaugerasDiffusion)
     kernels += pset.Kernel(pk.Inertia)
     kernels += pset.Kernel(pk.prevloc)
     kernels += pset.Kernel(pk.PreyDeplete)
 
     ikernels +=  pset.InteractionKernel(pk.Stcheck)
-    ikernels +=  pset.InteractionKernel(pk.ItunaPredFAD)
+    if(p!=-2): # p==-2 means that no fish is caught
+        ikernels +=  pset.InteractionKernel(pk.ItunaPredFAD)
 
     pset.execute(pyfunc=kernels,
                  pyfunc_inter=ikernels,

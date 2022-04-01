@@ -91,7 +91,6 @@ def make_subplot(ax, con='RW', t=0.01,
     dfp['day bin'] = pd.cut(dfp['days'], bins=labels,
                             labels=labelsc+2.5)
     plt.title(title, fontsize=fs)
-#    if(title[:3]!='(e)'):
     if(True):
         legend = False
         g = sns.lineplot(x="day bin",  y="present (%)", data=dfp,
@@ -279,7 +278,6 @@ def set_label2(ax, fs=fs):
 fig, ax = plt.subplots(3,3, figsize=(19,14),
                        gridspec_kw={'height_ratios': [10, 10,10],
                                     'width_ratios': [20, 20, 3]},
- #                      sharex = 'col',
                        )
 # Set parameters for plotting
 nfi = 1
@@ -338,9 +336,6 @@ for fi in range(4):
                                lw=1, marker=symb[fi], markeredgecolor='k',
                                markersize=10,
                                linewidth=2
-   #                            path_effects=[pe.Stroke(linewidth=2,
-   #                                                    foreground='k'),
-   #                                 pe.Normal()]
                                ))
 le1 = ax[2,1].legend(custom_lines, ['FS0',
                                     'FS1',
@@ -359,7 +354,6 @@ plt.setp(le1.get_title(),fontsize=fs-10)
 ax[-1,0].set_xlabel('Drifting time after deployment (days)', fontsize=fs)
 ax[-1,1].set_xlabel('Time after set (days)', fontsize=fs)
 
-#fig.tight_layout()
 plt.savefig('figure2_t%.2f_nfi%d.pdf'%(t,nfi), bbox_inches='tight')
 plt.show()
 
